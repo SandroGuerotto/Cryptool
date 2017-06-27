@@ -99,3 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# PyCharm
+inspectionProfiles
+profiles_settings.xml
+Cryptool.iml
+misc.xml
+modules.xml

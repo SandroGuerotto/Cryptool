@@ -1,10 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
-
-from pip._vendor import progress
-
 from bin.dataholder import Dataholder
+from bin.messagebox import Messagebox
 import os
 
 # only run the code when executed directly
@@ -15,7 +13,7 @@ if __name__ == "__main__":
 
     def create_new_key():
         # ToDo: logic to create new AES Key
-        dataholder.set_key(None)
+        dataholder.set_key()
 
 
     def import_key():
@@ -25,7 +23,8 @@ if __name__ == "__main__":
 
 
     def export_key():
-        pass
+        exportpath = filedialog.askdirectory(parent=root)
+        # ToDo: get currently used key and export to chosen location
 
 
     def create_menu():
@@ -48,6 +47,9 @@ if __name__ == "__main__":
         filename = filedialog.askopenfilename(parent=root)
         dataholder.set_source(str(filename))
         label.config(text=str(filename))
+        if len(filename) > 0:
+            btn_process["state"] = "normal"
+
         if os.path.splitext(os.path.basename(filename))[1] == ".aes":
             btn_process.config(text="entschlüsseln")
         else:
@@ -62,9 +64,10 @@ if __name__ == "__main__":
 
     def process(progressbar):
         on_process(progressbar)
-        # ToDo: import source File and en-/decrypt. save at given destination or same directory as source file
-        # handling with on_ methods
-        pass
+        if btn_process["text"] == "entschlüsseln":
+            # ToDo: import source File and decyript. save at given destination or same directory as source file
+        elif btn_process["text"] == "verschlüsseln":
+            # ToDo: import source File and encrypt. save at given destination or same directory as source file
 
 
     def on_error(progressbar):
@@ -72,6 +75,7 @@ if __name__ == "__main__":
         s.theme_use('alt')
         s.configure("red.Horizontal.TProgressbar", background='#e06666', foreground="#e06666")
         progressbar.config(style="red.Horizontal.TProgressbar")
+        messagebox.failed(dataholder.get_source())
 
 
     def on_success(progressbar):
@@ -79,6 +83,7 @@ if __name__ == "__main__":
         s.theme_use('alt')
         s.configure("green.Horizontal.TProgressbar", background='#93c47d', foreground="#93c47d")
         progressbar.config(style="green.Horizontal.TProgressbar")
+        messagebox.successful(dataholder.get_source())
 
 
     def on_process(progressbar):
@@ -86,13 +91,21 @@ if __name__ == "__main__":
         s.theme_use('alt')
         s.configure("blue.Horizontal.TProgressbar", background='#76a5af', foreground="#76a5af")
         progressbar.config(style="blue.Horizontal.TProgressbar")
+        messagebox.processing(dataholder.get_source())
 
 
     def on_reset(progressbar):
+        s = ttk.Style()
+        s.theme_use('alt')
+        s.configure("reset.Horizontal.TProgressbar")
+        progressbar.config(style="reset.Horizontal.TProgressbar")
         progressbar["value"] = 0
+        if messagebox is not None:
+            messagebox.clear()
 
 
     dataholder = Dataholder()
+    messagebox = Messagebox(root)
 
     # display the menu
     root.config(menu=create_menu())
@@ -103,23 +116,23 @@ if __name__ == "__main__":
     # button to start en-/decrypt
 
     progressbar = ttk.Progressbar(root, orient="horizontal", length=200, mode="determinate")
-    btn_process = Button(frame, text="verschlüsseln", command=lambda: process(progressbar))
+    btn_process = Button(frame, text="verschlüsseln", command=lambda: process(progressbar), state=DISABLED)
 
-    lbl_source = Label(frame, text="Pfad", width=50, anchor=W)
+    lbl_source = Label(frame, width=50, anchor=W)
     Button(frame, text="Datei auswählen", command=lambda: select_file(lbl_source, btn_process)).pack(padx=10, ipadx=2,
                                                                                                      side=LEFT)
     lbl_source.pack(padx=10, side=LEFT)
 
     btn_process.pack(padx=60, ipadx=2, side=LEFT)
 
-    lbl_destination = Label(frame, text="Pfad", width=50, anchor=E)
+    lbl_destination = Label(frame, width=50, anchor=E)
     Button(frame, text="Zielort auswählen", command=lambda: select_destination(lbl_destination)).pack(padx=10, ipadx=2,
                                                                                                       side=RIGHT)
     lbl_destination.pack(padx=10, side=RIGHT)
 
     progressbar.pack(padx=10, fill=X)
-    progressbar["value"] = 100
-    progressbar["maximum"] = 5000
-    on_error(progressbar)
+
+    on_reset(progressbar)
+    messagebox.show()
 
     root.mainloop()
