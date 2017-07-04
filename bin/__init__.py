@@ -71,13 +71,18 @@ if __name__ == "__main__":
     def process(progressbar):
         on_process(progressbar)
         if btn_process["text"] == "entschlüsseln":
-            decrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
-            on_success(progressbar)
+            bool = decrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
+            if bool:
+                on_success(progressbar)
+            else:
+                on_error(progressbar)
 
         elif btn_process["text"] == "verschlüsseln":
-            encrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
-            on_success(progressbar)
-
+            bool = encrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
+            if bool:
+                on_success(progressbar)
+            else:
+                on_error(progressbar)
 
     def on_error(progressbar):
         s = ttk.Style()

@@ -33,7 +33,7 @@ class Messagebox:
         self.set_status("Erfolgreich")
 
     def failed(self, file):
-        file.set_message("Die Datei " + file + " wurde nicht erfolgreich entschlüsselt")
+        self.set_message("Die Datei " + file + " wurde nicht erfolgreich entschlüsselt")
         self.set_status("Fehler")
 
     def clear(self):
