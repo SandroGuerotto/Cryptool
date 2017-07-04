@@ -24,16 +24,16 @@ class Messagebox:
         text = ":\t" + str(message)
         self.lbl_message.config(text=text)
 
-    def processing(self, file):
-        self.set_message("Die Datei " + file + " wird entschlüsselt")
+    def processing(self, file, mode):
+        self.set_message("Die Datei " + file + " wird " + mode)
         self.set_status("Läuft")
 
-    def successful(self, file):
-        self.set_message("Die Datei " + file + " wurde erfolgreich entschlüsselt")
+    def successful(self, file, mode):
+        self.set_message("Die Datei " + file + " wurde erfolgreich " + mode)
         self.set_status("Erfolgreich")
 
-    def failed(self, file):
-        self.set_message("Die Datei " + file + " wurde nicht erfolgreich entschlüsselt")
+    def failed(self, file, mode):
+        self.set_message("Die Datei " + file + " wurde nicht erfolgreich " + mode)
         self.set_status("Fehler")
 
     def clear(self):

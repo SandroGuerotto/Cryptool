@@ -69,46 +69,48 @@ if __name__ == "__main__":
 
     # Import source File and encrypt & decyript. save at given destination or same directory as source file
     def process(progressbar):
-        on_process(progressbar)
         if btn_process["text"] == "entschlüsseln":
+            on_process(progressbar, "entschlüsselt")
             bool = decrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
             if bool:
-                on_success(progressbar)
+                on_success(progressbar, "entschlüsselt")
             else:
-                on_error(progressbar)
+                on_error(progressbar, "entschlüsselt")
 
         elif btn_process["text"] == "verschlüsseln":
+            on_process(progressbar, "verschlüsselt")
             bool = encrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
             if bool:
-                on_success(progressbar)
+                on_success(progressbar, "verschlüsselt")
             else:
-                on_error(progressbar)
+                on_error(progressbar, "verschlüsselt")
 
-    def on_error(progressbar):
+    #callback functions for en- /decryption
+    def on_error(progressbar, mode):
         s = ttk.Style()
         s.theme_use('alt')
         s.configure("red.Horizontal.TProgressbar", background='#e06666', foreground="#e06666")
         progressbar.config(style="red.Horizontal.TProgressbar")
-        messagebox.failed(dataholder.get_source())
+        messagebox.failed(dataholder.get_source(), mode)
 
 
-    def on_success(progressbar):
+    def on_success(progressbar, mode):
         progressbar["value"] = 120
         s = ttk.Style()
         s.theme_use('alt')
         s.configure("green.Horizontal.TProgressbar", background='#93c47d', foreground="#93c47d")
         progressbar.config(style="green.Horizontal.TProgressbar")
-        messagebox.successful(dataholder.get_source())
+        messagebox.successful(dataholder.get_source(), mode)
 
 
-    def on_process(progressbar):
+    def on_process(progressbar, mode):
         progressbar["value"] = 50
         progressbar["maximum"]= 120
         s = ttk.Style()
         s.theme_use('alt')
         s.configure("blue.Horizontal.TProgressbar", background='#76a5af', foreground="#76a5af")
         progressbar.config(style="blue.Horizontal.TProgressbar")
-        messagebox.processing(dataholder.get_source())
+        messagebox.processing(dataholder.get_source(), mode)
 
 
     def on_reset(progressbar):
