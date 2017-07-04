@@ -29,7 +29,7 @@ class Messagebox:
         self.set_status("Läuft")
 
     def successful(self, file):
-        self.set_message("Die Datei " + file + " wurde erfolgreich entschlüsselt (200KB)")
+        self.set_message("Die Datei " + file + " wurde erfolgreich entschlüsselt")
         self.set_status("Erfolgreich")
 
     def failed(self, file):

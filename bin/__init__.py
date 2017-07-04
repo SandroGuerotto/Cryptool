@@ -4,6 +4,7 @@ from tkinter import filedialog
 from bin.dataholder import Dataholder
 from bin.messagebox import Messagebox
 import os
+from bin.encryption import *
 
 # only run the code when executed directly
 if __name__ == "__main__":
@@ -11,20 +12,24 @@ if __name__ == "__main__":
     root.title("Cryptool")
 
 
+    # logic to create new AES Key
     def create_new_key():
-        # ToDo: logic to create new AES Key
-        dataholder.set_key()
+        key = generate_new_key()
+        bytes(key, "ascii")
+        dataholder.set_key(key)
 
 
+    # load key using var: keypath
     def import_key():
         keypath = filedialog.askopenfilename(parent=root)
-        # ToDo: load key using var: keypath
-        dataholder.set_key(None)
+        key = import_aeskey(keypath)
+        dataholder.set_key(key)
 
 
+    # Get currently used key and export to chosen location
     def export_key():
         exportpath = filedialog.askdirectory(parent=root)
-        # ToDo: get currently used key and export to chosen location
+        save_key(dataholder.get_key(), exportpath)
 
 
     def create_menu():
@@ -62,12 +67,16 @@ if __name__ == "__main__":
         label.config(text=str(filename))
 
 
+    # Import source File and encrypt & decyript. save at given destination or same directory as source file
     def process(progressbar):
         on_process(progressbar)
         if btn_process["text"] == "entschlüsseln":
-            # ToDo: import source File and decyript. save at given destination or same directory as source file
+            decrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
+            on_success(progressbar)
+
         elif btn_process["text"] == "verschlüsseln":
-            # ToDo: import source File and encrypt. save at given destination or same directory as source file
+            encrypt_file(bytes(dataholder.get_key(), "ascii"), dataholder.get_source(), dataholder.get_destination())
+            on_success(progressbar)
 
 
     def on_error(progressbar):
@@ -79,6 +88,7 @@ if __name__ == "__main__":
 
 
     def on_success(progressbar):
+        progressbar["value"] = 120
         s = ttk.Style()
         s.theme_use('alt')
         s.configure("green.Horizontal.TProgressbar", background='#93c47d', foreground="#93c47d")
@@ -87,6 +97,8 @@ if __name__ == "__main__":
 
 
     def on_process(progressbar):
+        progressbar["value"] = 50
+        progressbar["maximum"]= 120
         s = ttk.Style()
         s.theme_use('alt')
         s.configure("blue.Horizontal.TProgressbar", background='#76a5af', foreground="#76a5af")
